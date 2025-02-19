@@ -294,7 +294,7 @@ defaults:
       related: true
       show_date: true
       toc: true
-      toc_sticky: false
+      toc_sticky: true
       toc_label: 목차
       toc_icon: "fas fa-window-restore"
 
