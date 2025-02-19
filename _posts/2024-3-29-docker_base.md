@@ -1,7 +1,7 @@
 ---
 layout: single
 title:  "Docker 기초 실습"
-categories: docker
+categories: Study
 tags: [Docker, Kurbernets, DevOps, MLOps]
 toc: true
 author_profile: false
