@@ -5,6 +5,8 @@ categories: Study
 tags: [Docker, Kurbernets, DevOps, MLOps]
 toc: true
 author_profile: false
+sidebar:
+    nav: "counts"
 ---
 
 # Docker 기초 실습하기

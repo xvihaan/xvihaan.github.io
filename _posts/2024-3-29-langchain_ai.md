@@ -5,6 +5,8 @@ categories: AI
 tags: [AI, ML, DL, AutoML, LangChain, DevOps]
 toc: true
 author_profile: false
+sidebar:
+    nav: "counts"
 ---
 
 # AutoML과 Langchain 질문하기
