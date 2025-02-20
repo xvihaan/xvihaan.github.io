@@ -1,0 +1,124 @@
+---
+layout: single
+title:  "12.케창딥 - 오토인코더"
+categories: Study
+tags: [AI, DL, keras, tensorflow]
+toc: true
+author_profile: false
+sidebar:
+    nav: "counts"
+---
+
+# 12장 변이형 오토인코더를 사용한 이미지 생성
+
+### VAE(Variational Autoencoder)
+
+
+확률적 생성 모델로, 오토인코더 구조에 기반하여 인코더와 디코더로 구성.
+
+잠재 공간에서 데이터를 확률 분포로 변환하여 학습
+
+- Encoder: 입력 데이터를 저차원 **잠재 벡터**(latent vector)로 변환
+- Decoder: 잠재 벡터를 입력 데이터로 **복원**
+- 변분 추론: VAE는 잠재 변수를 **정규 분포**로 표현하고, 이 분포로부터 샘플링하여 데이터를 복원
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c09f8228-29c7-4dcb-8ca3-1de7d3988fab/b98a0d8b-07ad-4e06-9e2f-316dac7c843c/image.png)
+
+- 오토 인코더
+    - 인코더가 메인이며, 디코더는 부가적인 것
+- 변이형 오토 인코더
+    - 디코더가 메인이며, 인코더가 부가적인것
+
+- **loss function**
+    - 재구성 손실(reconstriction loss): 디코딩된 샘플이 원본 입력과 동일하도록 만듦
+    - 규제 손실(regularization loss): 잠재 공간을 잘 형성하고 훈련 데이터에 과대적합을 줄임
+    
+    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c09f8228-29c7-4dcb-8ca3-1de7d3988fab/d45340e2-2892-4103-ba7f-303b08ebab10/image.png)
+    
+    - **Reconstruction Error (재구성)**
+        
+        ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c09f8228-29c7-4dcb-8ca3-1de7d3988fab/f2385bd5-7c69-4c65-9d0b-5508b4bab302/image.png)
+        
+        - 원본 입력값을 출력으로 생성할 수 있게 복원해주는 loss
+            - VAE에서 decoder의 output pi 는 베르누이 분포(이진분류) 를 따른다고 가정
+        - cross entropy 계산
+            - predicted value pi 와 target value xi 의 차이를 구하기 위함
+    - **Regularization error (정규화)**
+        
+        ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c09f8228-29c7-4dcb-8ca3-1de7d3988fab/cffd9ef0-2312-4818-a9f2-2f28e5edd5a7/image.png)
+        
+        - 표준 정규분포에서 샘플링 된 값 p(z)과 encoder output 인  qϕ(z|xi)qϕ(z|xi) 의 차이가 적도록 해주는 loss
+        - 최고로 분포가 겹치면 최대치는 1.
+        - 두 가지가 얼마나 닮았는지 확인하는 장점.
+        - 랜덤한 포인트에 대해서 이 모델이 강건하게된다.
+        - 정규분포로 근사하게 만들기 위함
+        - KLdivergence 계산 *사용*
+            - 두개의 확률 분포에 대한 차이를 비교
+            - 확률 분포 Q, P
+                - Q의 분포와 P의 분포가 어느 정도 닮았는지 수치적으로 파악 가능
+
+P.516
+
+z, s 각 포인트를 어떤 표현이다라고 딱 잘라 말하기 어려움
+
+### 12.5) 생성적 적대 신경망 소개
+
+### GAN(Generative Adversarial Networks)
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c09f8228-29c7-4dcb-8ca3-1de7d3988fab/725b5f51-7902-42a9-81f0-bacf0ecb5b14/image.png)
+
+두 개의 신경망인 Generator(생성자)와 Discriminator(판별자)가 적대적 게임을 통해 학습
+
+- Generator: 랜덤한 노이즈로부터 **새로운 데이터를 생성**. 목표는 **진짜 같은 가짜 데이터**를 만들어 **Discriminator**를 속이는 것
+- Discriminator: **진짜 데이터**와 **Generator가 만든 가짜 데이터**를 구별하는 역할. 목표는 **가짜 데이터를 구별**하고, 진짜 데이터를 제대로 구분하는 것
+
+- loss function
+    
+    ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c09f8228-29c7-4dcb-8ca3-1de7d3988fab/9324397c-d82a-4957-9b27-1de672b95b54/image.png)
+    
+    *G*min*D*max*V*(*D*,*G*)=*Ex*∼*pdata*(*x*)[log*D*(*x*)]+*Ez*∼*pz*(*z*)[log(1−*D*(*G*(*z*)))]
+    
+    - **A. *Discriminator* 관점**
+        
+        Discriminator 
+        
+        binary Cross Entropy 손실 함수 사용
+        
+        - 목적함수를 **최대화**하는 것이 목적
+            1. Left Term : *Ex*∼*pdata*(*x*)[log*D*(*x*)]
+                - *x*∼*pdata*(*x*) : 확률 밀도 함수, 실제 데이터에서 샘플링,
+                - log*D*(*x*) 최대화 : 실제 데이터에서 받은 데이터를 입력으로 받으면, *D*는 1에 가까운 값을 출력해야함, *D*(*x*)는 0~1사이 값을 출력
+            2. Right Term : *Ez*∼*pz*(*z*)[log(1−*D*(*G*(*z*)))]
+                - *z*∼*pz*(*z*) : z는 Generator로 들어가는 입력, 표준 정규 분포/uniform 분포에서 랜덤하게 추출된 100차원의 벡터
+                - *G*(*z*) : Random 하게 생성한 벡터를 입력으로 받아 Generate한 이미지, 출력은 가짜 이미지
+                - *D*(*G*(*z*)) : 이를 다시 Discriminator에 넣어 Fake, Real Binary classification
+                - log(1−*D*(*G*(*z*))) : *D*(*G*(*z*))값이 0일때 최대 = *z*로 부터 생성된 가짜 이미지를 가짜로 분류하였을때 최대값을 가짐 = 학습 목표
+        
+    - **B. *Generator* 관점**
+        
+        ![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c09f8228-29c7-4dcb-8ca3-1de7d3988fab/b29331b6-2411-4146-8264-6d608b377f29/image.png)
+        
+        - Generator loss 값이 낮아진다.  = 가짜 이미지를 진짜 처럼 더 생성
+        - Generator loss 값이 높아진다. =
+        - 목적함수를 **최소화**하는 것이 목적
+            1. Left Term : *Ex*∼*pdata*(*x*)[log*D*(*x*)]
+                - 실제이미지를 discriminate하는 것과 Generator는 독립
+            2. Right Term : *Ez*∼*pz*(*z*)[log(1−*D*(*G*(*z*)))]
+                - 가짜이미지를 입력으로 받았을 때 Discriminator가 진짜 이미지로 분류하도록 하는 것이 목적
+                - *D*(*G*(*z*)) 값이 1일때 최소 = z로 부터 생성된 가짜 이미지를 진짜로 분류하였을때 최소값을 가짐 = 학습 목표
+
+### 각 모델의 비교:
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/c09f8228-29c7-4dcb-8ca3-1de7d3988fab/4c9878b5-6e6a-49af-8372-1bad5bcc4495/image.png)
+
+| 모델 | 학습 방식 | 생성 속도 | 생성 품질 | 학습 안정성 | 주요 문제 |
+| --- | --- | --- | --- | --- | --- |
+| **GAN** | 생성자와 판별자가 적대적 관계로 학습 | **빠름** | **매우 사실적** | 불안정함 | 모드 붕괴 |
+| **VAE** | 잠재 공간에서 정규 분포로 학습 | 빠름 | 품질이 낮음 | **안정적** | 저화질 |
+| **Diffusion** | 노이즈를 점진적으로 추가/제거하는 방식 학습 | **느림** | **매우 고해상도** | 매우 안정적 | 느린 속도 |
+|  |  |  |  |  |  |
+
+**GAN:** 높은 품질의 샘플, 빠른 샘플링
+**VAE**: 빠른 샘플링, 모델 적용범위(다양성)
+**Diffusion Model:** 다양한 데이터 저장, 높은 퀄리티샘플(전역적->지역적적용)
+약점: 오래걸리는 문제 -> stable diffusion model(문제 해결)
