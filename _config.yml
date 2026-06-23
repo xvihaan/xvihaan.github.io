@@ -188,6 +188,7 @@ exclude:
   - tmp
   - /docs # ignore Minimal Mistakes /docs
   - /test # ignore Minimal Mistakes /test
+  - architect.md # 내부 분석 문서 (비공개)
 keep_files:
   - .git
   - .svn
