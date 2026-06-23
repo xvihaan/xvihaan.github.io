@@ -1,0 +1,53 @@
+<!-- Invisible click-outside trap (no dimming) -->
+<div id="nav-panel-overlay" class="nav-panel__overlay"></div>
+
+<aside id="nav-panel" class="nav-panel" aria-label="탐색 패널" aria-hidden="true">
+
+  <div class="nav-panel__header">
+    <span id="nav-panel-title" class="nav-panel__title">Category</span>
+    <button id="nav-panel-close" class="nav-panel__close" aria-label="패널 닫기">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+
+  <div class="nav-panel__body">
+
+    <div class="nav-panel__pane active" id="pane-category" role="region" aria-label="카테고리">
+      {% assign sorted_cats = site.categories | sort %}
+      {% for cat in sorted_cats %}
+      <a class="nav-panel__item" href="{{ '/categories/' | relative_url }}#{{ cat[0] | slugify }}">
+        <span class="nav-panel__item-name">{{ cat[0] }}</span>
+        <span class="nav-panel__item-count">{{ cat[1].size }}</span>
+      </a>
+      {% endfor %}
+      {% if sorted_cats.size == 0 %}
+      <p class="nav-panel__empty">카테고리가 없습니다.</p>
+      {% endif %}
+    </div>
+
+    <div class="nav-panel__pane" id="pane-tag" role="region" aria-label="태그" hidden>
+      {% assign sorted_tags = site.tags | sort %}
+      {% for tag in sorted_tags %}
+      <a class="nav-panel__item" href="{{ '/tags/' | relative_url }}#{{ tag[0] | slugify }}">
+        <span class="nav-panel__item-name">{{ tag[0] }}</span>
+        <span class="nav-panel__item-count">{{ tag[1].size }}</span>
+      </a>
+      {% endfor %}
+      {% if sorted_tags.size == 0 %}
+      <p class="nav-panel__empty">태그가 없습니다.</p>
+      {% endif %}
+    </div>
+
+    <div class="nav-panel__pane" id="pane-search" role="region" aria-label="검색" hidden>
+      <div class="nav-panel__search-wrap">
+        <i class="fas fa-search nav-panel__search-icon"></i>
+        <input type="search" id="panel-search-input" class="nav-panel__search-input"
+               placeholder="제목 · 태그 · 카테고리 검색..." autocomplete="off">
+      </div>
+      <div id="panel-search-results" class="nav-panel__results">
+        <p class="nav-panel__hint">검색어를 입력하세요.</p>
+      </div>
+    </div>
+
+  </div>
+</aside>

@@ -2,20 +2,27 @@
 
 <!-- insert favicons. use https://realfavicongenerator.net/ -->
 
-<!-- Dark mode: load dark stylesheet (media="not all" = downloaded but not applied) -->
-<!-- Inline script applies it synchronously before render to prevent FOUC -->
 <link id="dark-css" rel="stylesheet" href="{{ '/assets/css/skin-dark.css' | relative_url }}" media="not all">
 <script>
 (function () {
   try {
-    if (localStorage.getItem('theme') === 'dark') {
-      document.getElementById('dark-css').media = 'all';
+    var dark = localStorage.getItem('theme') === 'dark';
+    if (dark) { document.getElementById('dark-css').media = 'all'; }
+    var r = document.documentElement;
+    if (dark) {
+      r.style.setProperty('--site-bg',   '#252a34');
+      r.style.setProperty('--np-bg',     '#2e3441');
+      r.style.setProperty('--np-text',   '#eaeaea');
+      r.style.setProperty('--np-border', '#51555d');
+      r.style.setProperty('--np-hover',  '#3a3f4e');
+      r.style.setProperty('--np-accent', '#00adb5');
     }
   } catch (e) {}
 })();
 </script>
 
 <style>
+/* ── Theme toggle button ─────────────────────────── */
 #theme-toggle {
   position: fixed;
   bottom: 1.5em;
@@ -36,9 +43,197 @@
   opacity: 0.65;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
-#theme-toggle:hover {
-  opacity: 1;
-  transform: scale(1.12);
+#theme-toggle:hover { opacity: 1; transform: scale(1.12); }
+
+/* ── CSS variables ───────────────────────────────── */
+:root {
+  --site-bg:    #ffffff;   /* body background — updated by JS in dark mode */
+  --np-bg:      #f8f9f9;
+  --np-text:    #3d4144;
+  --np-border:  #e8e9e9;
+  --np-hover:   #f2f3f3;
+  --np-accent:  #2f7d95;
+  --masthead-h: 0px;
+}
+
+/* ── Sticky masthead ─────────────────────────────── */
+.masthead {
+  position: sticky !important;
+  top: 0;
+  z-index: 9100;
+  /* solid bg so page content doesn't bleed through when scrolling */
+  background-color: var(--site-bg) !important;
+}
+
+/* ── Overlay: transparent click-trap only, no dimming ── */
+.nav-panel__overlay {
+  position: fixed;
+  top: var(--masthead-h);
+  left: 0; right: 0; bottom: 0;
+  background: transparent;
+  z-index: 10000;
+  pointer-events: none;
+}
+.nav-panel__overlay.is-open { pointer-events: auto; }
+
+/* ── Panel ───────────────────────────────────────── */
+.nav-panel {
+  position: fixed;
+  top: var(--masthead-h);
+  right: 0;
+  height: calc(100% - var(--masthead-h));
+  width: 420px;
+  max-width: 92vw;
+  z-index: 10001;
+  transform: translateX(100%);
+  transition: transform 0.26s ease;
+  display: flex;
+  flex-direction: column;
+  background: var(--np-bg);
+  color: var(--np-text);
+  box-shadow: -6px 0 24px rgba(0, 0, 0, 0.12);
+  border-left: 1px solid var(--np-border);
+}
+.nav-panel.is-open { transform: translateX(0); }
+
+/* ── Header: title + close ──────────────────────── */
+.nav-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.2em;
+  height: 3em;
+  border-bottom: 1px solid var(--np-border);
+  flex-shrink: 0;
+}
+.nav-panel__title {
+  font-size: 0.82em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.nav-panel__close {
+  width: 2.4em;
+  height: 2.4em;
+  border: none;
+  background: transparent;
+  color: var(--np-text);
+  font-size: 1em;
+  cursor: pointer;
+  opacity: 0.45;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s;
+  margin-right: -0.4em;
+}
+.nav-panel__close:hover { opacity: 1; }
+
+/* ── Body / panes ────────────────────────────────── */
+.nav-panel__body { flex: 1; overflow-y: auto; }
+.nav-panel__pane { display: none; }
+.nav-panel__pane.active { display: block; }
+
+/* ── Category / Tag list items ───────────────────── */
+.nav-panel__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.72em 1.4em;
+  text-decoration: none !important;
+  color: var(--np-text) !important;
+  font-size: 0.9em;
+  border-bottom: 1px solid var(--np-border);
+  transition: background 0.12s, color 0.12s;
+}
+.nav-panel__item:hover {
+  background: var(--np-hover);
+  color: var(--np-accent) !important;
+}
+.nav-panel__item-name { flex: 1; }
+.nav-panel__item-count {
+  font-size: 0.75em;
+  opacity: 0.65;
+  background: var(--np-border);
+  border-radius: 999px;
+  padding: 0.1em 0.6em;
+  margin-left: 0.6em;
+  min-width: 1.8em;
+  text-align: center;
+}
+
+/* ── Search pane ─────────────────────────────────── */
+.nav-panel__search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.9em 1.4em;
+  border-bottom: 1px solid var(--np-border);
+}
+.nav-panel__search-icon { opacity: 0.4; }
+.nav-panel__search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--np-text);
+  font-size: 0.92em;
+  outline: none;
+  line-height: 1.6;
+}
+.nav-panel__search-input::placeholder { opacity: 0.4; }
+.nav-panel__results { padding: 0.2em 0; }
+
+.nav-panel__result {
+  display: block;
+  padding: 0.75em 1.4em;
+  text-decoration: none !important;
+  color: var(--np-text) !important;
+  border-bottom: 1px solid var(--np-border);
+  transition: background 0.12s;
+}
+.nav-panel__result:hover {
+  background: var(--np-hover);
+  color: var(--np-accent) !important;
+}
+.nav-panel__result-title { display: block; font-size: 0.88em; font-weight: 600; }
+.nav-panel__result-meta  { display: block; font-size: 0.74em; opacity: 0.5; margin-top: 0.2em; }
+
+.nav-panel__hint  { padding: 1.4em; font-size: 0.84em; opacity: 0.45; margin: 0; }
+.nav-panel__empty { padding: 1.4em; font-size: 0.84em; opacity: 0.45; margin: 0; }
+
+/* ── Body scroll lock while panel open ───────────── */
+body.nav-panel--open { overflow: hidden; }
+
+/* ── Sticky TOC (right sidebar) ──────────────────────────────────────────────
+   MM's toc_sticky:true uses invalid `float: top` causing layout collapse.
+   Instead we keep toc_sticky:false and apply sticky directly:
+   - position:sticky replaces position:absolute (MM default)
+   - float:right maintains the two-column layout (sidebar before content in HTML)
+   - negative margin-right keeps sidebar pulled outside the content area
+   - max-height + overflow-y lets the TOC scroll when longer than viewport
+   ─────────────────────────────────────────────────────────────────────────── */
+@media (min-width: 1024px) {
+  .sidebar__right {
+    position: sticky !important;
+    position: -webkit-sticky !important;
+    top: calc(var(--masthead-h, 0px) + 1em) !important;
+    /* float:right keeps it in-flow on the right (sidebar is first in HTML order) */
+    float: right !important;
+    width: 200px !important;
+    margin-right: -200px !important;
+    padding-left: 1em !important;
+    z-index: 10 !important;
+    /* Scrollable if TOC is taller than visible area */
+    max-height: calc(100vh - var(--masthead-h, 0px) - 2em);
+    overflow-y: auto;
+  }
+}
+@media (min-width: 1500px) {
+  .sidebar__right {
+    width: 300px !important;
+    margin-right: -300px !important;
+  }
 }
 </style>
 

@@ -16,10 +16,10 @@ minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt"
 
 # Site Settings
 locale                   : "ko-KR"
-title                    : "be Bright, bright"
+title                    : "sees everything, explains everything."
 title_separator          : "|"
-subtitle                 : "민혁의 개발 블로그."
-name                     : "MinHyeok Kim"
+subtitle                 : "시재의 디벨롭 여행."
+name                     : "SIJE"
 description              : 
 url                      : "https://xvihaan.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
@@ -32,7 +32,7 @@ words_per_minute         : 200
 comments:
   provider               : "disqus" # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances", "giscus", "custom"
   disqus:
-    shortname            : "vihaan" #https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
+    shortname            : "sije" #https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
   discourse:
     server               : # https://meta.discourse.org/t/embedding-discourse-comments-via-javascript/31963 , e.g.: meta.discourse.org
   facebook:
@@ -102,9 +102,9 @@ analytics:
 
 # Site Author
 author:
-  name             : "MinHyeok"
-  avatar           : "/assets/images/bbright.png"
-  bio              : "총명하며 빛나라"
+  name             : "시 재"
+  avatar           : "/assets/images/sfcat.png"
+  bio              : "모든 보고 모든 설명하다"
   location         : "South Korea"
   email            : 
   links:
@@ -277,6 +277,7 @@ jekyll-archives:
 
 after_footer_scripts:
   - /assets/js/theme-toggle.js
+  - /assets/js/nav-panel.js
 
 
 # HTML Compression

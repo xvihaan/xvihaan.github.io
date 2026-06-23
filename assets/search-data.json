@@ -1,0 +1,11 @@
+---
+layout: none
+permalink: /assets/search-data.json
+---
+[{% for post in site.posts %}{
+  "t": {{ post.title | jsonify }},
+  "u": {{ post.url | jsonify }},
+  "c": {{ post.categories | join: " " | jsonify }},
+  "g": {{ post.tags | join: " " | jsonify }},
+  "d": {{ post.date | date: "%Y.%m.%d" | jsonify }}
+}{% unless forloop.last %},{% endunless %}{% endfor %}]
