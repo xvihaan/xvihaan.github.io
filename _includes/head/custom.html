@@ -2,4 +2,44 @@
 
 <!-- insert favicons. use https://realfavicongenerator.net/ -->
 
+<!-- Dark mode: load dark stylesheet (media="not all" = downloaded but not applied) -->
+<!-- Inline script applies it synchronously before render to prevent FOUC -->
+<link id="dark-css" rel="stylesheet" href="{{ '/assets/css/skin-dark.css' | relative_url }}" media="not all">
+<script>
+(function () {
+  try {
+    if (localStorage.getItem('theme') === 'dark') {
+      document.getElementById('dark-css').media = 'all';
+    }
+  } catch (e) {}
+})();
+</script>
+
+<style>
+#theme-toggle {
+  position: fixed;
+  bottom: 1.5em;
+  left: 1.5em;
+  z-index: 9999;
+  background: transparent;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  width: 2.6em;
+  height: 2.6em;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  color: inherit;
+  opacity: 0.65;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#theme-toggle:hover {
+  opacity: 1;
+  transform: scale(1.12);
+}
+</style>
+
 <!-- end custom head snippets -->
